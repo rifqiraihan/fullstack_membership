@@ -51,7 +51,7 @@ export const googleLogin = async (req: Request, res: Response): Promise<void> =>
 
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, membership_type } = req.body;
 
     const existingUser = await findUserByEmail(email);
     if (existingUser) {
@@ -60,8 +60,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await createUser(name, email, hashedPassword, 'local', 'A');
-
+    const user = await createUser(name, email, hashedPassword, 'local', membership_type);
 
     const token = jwt.sign(
       { id: user.id, membership_type: user.membership_type },
@@ -75,6 +74,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 export const login = async (req: Request, res: Response): Promise<void> => {
   try {
