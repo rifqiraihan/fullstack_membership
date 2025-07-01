@@ -8,10 +8,13 @@ const RegisterPage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [membershipType, setMembershipType] = useState<"A" | "B" | "C">("A");
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const isFormValid = name && email && password && membershipType;
 
   const handleRegister = async () => {
     setLoading(true);
@@ -37,9 +40,9 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center px-4">
       <div className="bg-white p-8 rounded shadow-lg w-full max-w-md">
-        <h2 className="text-3xl font-bold mb-6 text-center">Register</h2>
+        <h2 className="text-3xl font-bold mb-6 text-black text-center">Register</h2>
 
         {error && (
           <div className="bg-red-100 text-red-700 text-sm rounded p-3 mb-4">
@@ -63,14 +66,25 @@ const RegisterPage = () => {
             placeholder="Email"
             disabled={loading}
           />
-          <input
-            className="w-full border bg-white text-black border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            disabled={loading}
-          />
+          <div className="relative">
+            <input
+              className="w-full border bg-white text-black border-gray-300 rounded px-4 py-2 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              disabled={loading}
+            />
+            <button
+              type="button"
+              className="absolute bg-gray-300 inset-y-0 right-0 flex items-center px-3 text-sm text-blue-600 hover:underline"
+              onClick={() => setShowPassword(!showPassword)}
+              tabIndex={-1}
+            >
+              {showPassword ? "Hide" : "Show"}
+            </button>
+          </div>
+
           <select
             className="w-full border bg-white text-black border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
             value={membershipType}
@@ -84,8 +98,12 @@ const RegisterPage = () => {
 
           <button
             onClick={handleRegister}
-            disabled={loading}
-            className="w-full bg-green-600 text-white py-2 rounded font-medium hover:bg-green-700 transition-colors"
+            disabled={loading || !isFormValid}
+            className={`w-full py-2 rounded font-medium transition-colors ${
+              loading || !isFormValid
+                ? "bg-gray-400 text-white cursor-not-allowed"
+                : "bg-green-600 text-white hover:bg-green-700"
+            }`}
           >
             {loading ? "Registering..." : "Register"}
           </button>

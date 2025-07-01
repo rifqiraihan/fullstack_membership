@@ -5,7 +5,7 @@ const HomePage = () => {
   const { user, logout } = useAuth();
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+    <div className="min-h-screen flex items-center justify-center px-4">
       <div className="bg-white p-8 rounded shadow-lg w-full max-w-md text-center">
         <h1 className="text-3xl text-black font-bold mb-4">Welcome{user?.name ? `, ${user.name}` : ""}!</h1>
         <p className="text-gray-700 mb-6">
