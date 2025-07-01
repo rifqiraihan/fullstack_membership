@@ -1,6 +1,4 @@
-// src/contexts/AuthContext.tsx
 import { createContext, useContext, useState, useEffect } from "react";
-import jwtDecode from "jwt-decode";
 
 export type UserType = {
   id: number;
