@@ -52,46 +52,60 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6">
-      <h2 className="text-2xl font-bold mb-4">Login</h2>
-
-      {error && (
-        <div className="bg-red-100 text-red-700 p-2 rounded mb-4">
-          {error}
-        </div>
-      )}
-
-      <input
-        className="w-full border p-2 mb-2 rounded"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email"
-        disabled={loading}
-      />
-      <input
-        className="w-full border p-2 mb-4 rounded"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        type="password"
-        placeholder="Password"
-        disabled={loading}
-      />
-      <button
-        onClick={handleLogin}
-        disabled={loading}
-        className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
-      >
-        {loading ? "Loading..." : "Login"}
-      </button>
-
-      <div className="my-6 text-center text-gray-500">atau</div>
-
-      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-        <GoogleLogin
-          onSuccess={handleGoogleLogin}
-          onError={() => setError("Google login gagal")}
+    <div className="min-h-screen flex items-center justify-center w-full bg-red-500">
+      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
+  
+        {error && (
+          <div className="bg-red-100 text-red-700 p-2 rounded mb-4 text-sm">
+            {error}
+          </div>
+        )}
+  
+        <input
+          className="w-full border p-2 mb-2 rounded"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
+          disabled={loading}
         />
-      </GoogleOAuthProvider>
+        <input
+          className="w-full border p-2 mb-4 rounded"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          type="password"
+          placeholder="Password"
+          disabled={loading}
+        />
+        <button
+          onClick={handleLogin}
+          disabled={loading}
+          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+        >
+          {loading ? "Loading..." : "Login"}
+        </button>
+  
+        <div className="my-6 text-center text-gray-500">atau</div>
+  
+        <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+          <div className="flex justify-center">
+            <GoogleLogin
+              onSuccess={handleGoogleLogin}
+              onError={() => setError("Google login gagal")}
+            />
+          </div>
+        </GoogleOAuthProvider>
+  
+        <p className="mt-6 text-center text-sm">
+          Belum punya akun?{" "}
+          <a
+            href="/register"
+            className="text-blue-600 hover:underline"
+          >
+            Daftar di sini
+          </a>
+        </p>
+      </div>
     </div>
   );
 };

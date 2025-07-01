@@ -6,6 +6,7 @@ import { JSX } from "react";
 import ArticlesPage from "./pages/ArticlesPage";
 import VideosPage from "./pages/VideosPage";
 import HomePage from "./pages/HomePage";
+import RegisterPage from "./pages/RegisterPage";
 
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
   const { token } = useAuth();
@@ -17,6 +18,7 @@ const App = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
         <Route path="/" element={<PrivateRoute><HomePage /></PrivateRoute>} />
         <Route path="/articles" element={<PrivateRoute><ArticlesPage /></PrivateRoute>} />
         <Route path="/videos" element={<PrivateRoute><VideosPage /></PrivateRoute>} />
