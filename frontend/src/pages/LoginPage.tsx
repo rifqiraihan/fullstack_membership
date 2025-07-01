@@ -1,7 +1,11 @@
 import axios from "axios";
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
+import {
+  GoogleLogin,
+  GoogleOAuthProvider,
+  CredentialResponse,
+} from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
@@ -12,97 +16,103 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const handleLogin = async () => {
     setLoading(true);
-    setError("");
+    setError(null);
+
     try {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, {
         email,
         password,
       });
+
       login(res.data.token, res.data.user);
       navigate("/");
     } catch (err: any) {
-      if (err.response?.data?.message) {
-        setError(err.response.data.message);
-      } else {
-        setError("Login gagal. Coba lagi.");
-      }
+      const msg =
+        err?.response?.data?.message || "Login failed. Please try again.";
+      setError(msg);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleGoogleLogin = async (credentialResponse: any) => {
+  const handleGoogleLogin = async (credentialResponse: CredentialResponse) => {
     setLoading(true);
-    setError("");
+    setError(null);
+
     try {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/google`, {
         credential: credentialResponse.credential,
       });
+
       login(res.data.token, res.data.user);
       navigate("/");
     } catch {
-      setError("Login Google gagal.");
+      setError("Google login failed. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center w-full">
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
-  
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+      <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
+        <h2 className="text-3xl font-bold text-center mb-6">Login</h2>
+
         {error && (
-          <div className="bg-red-100 text-red-700 p-2 rounded mb-4 text-sm">
+          <div className="bg-red-100 text-red-700 text-sm rounded p-3 mb-4">
             {error}
           </div>
         )}
-  
-        <input
-          className="w-full border p-2 mb-2 rounded"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
-          disabled={loading}
-        />
-        <input
-          className="w-full border p-2 mb-4 rounded"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          type="password"
-          placeholder="Password"
-          disabled={loading}
-        />
-        <button
-          onClick={handleLogin}
-          disabled={loading}
-          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
-        >
-          {loading ? "Loading..." : "Login"}
-        </button>
-  
-        <div className="my-6 text-center text-gray-500">atau</div>
-  
+
+        <div className="space-y-4">
+          <input
+            type="email"
+            className="w-full border bg-white text-black border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={loading}
+          />
+          <input
+            type="password"
+            className="w-full border bg-white text-black border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            disabled={loading}
+          />
+
+          <button
+            onClick={handleLogin}
+            disabled={loading}
+            className="w-full bg-blue-600 text-white rounded px-4 py-2 font-medium hover:bg-blue-700 transition-colors"
+          >
+            {loading ? "Logging in..." : "Login"}
+          </button>
+        </div>
+
+        <div className="my-6 text-center text-sm text-gray-500">or continue with</div>
+
         <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
           <div className="flex justify-center">
             <GoogleLogin
               onSuccess={handleGoogleLogin}
-              onError={() => setError("Google login gagal")}
+              onError={() => setError("Google login failed.")}
             />
           </div>
         </GoogleOAuthProvider>
-  
-        <p className="mt-6 text-center text-sm">
-          Belum punya akun?{" "}
+
+        <p className="mt-6 text-center text-sm text-gray-600">
+          Don’t have an account?{" "}
           <a
             href="/register"
-            className="text-blue-600 hover:underline"
+            className="text-blue-600 hover:underline font-medium"
           >
-            Daftar di sini
+            Register here
           </a>
         </p>
       </div>
